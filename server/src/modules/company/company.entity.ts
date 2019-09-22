@@ -3,15 +3,23 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
-  OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
-import { CompanyEntity } from '../company/company.entity';
+import { UserEntity } from '../user/user.entity';
 
-@Entity('User')
-export class UserEntity extends BaseEntity {
+@Entity('Company')
+export class CompanyEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column('varchar', {
+    nullable: false,
+    unique: true,
+    name: 'name',
+  })
+  name: string;
 
   @Column('varchar', {
     nullable: false,
@@ -21,17 +29,22 @@ export class UserEntity extends BaseEntity {
   email: string;
 
   @Column('varchar', {
-    nullable: false,
-    unique: true,
-    name: 'password',
-  })
-  password: string;
-
-  @OneToMany(_type => CompanyEntity, company => company.owner, {
     nullable: true,
-    cascade: true,
+    name: 'logotype',
   })
-  companies: CompanyEntity[];
+  logotype: string;
+
+  @Column('varchar', {
+    nullable: true,
+    name: 'website',
+  })
+  website: string;
+
+  @ManyToOne(_type => UserEntity, user => user.companies, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'owner' })
+  owner: UserEntity;
 
   @Column('datetime', {
     nullable: false,

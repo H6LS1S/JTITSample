@@ -1,15 +1,8 @@
-import {
-  IsEmail,
-  IsString,
-  MinLength,
-  MaxLength,
-  IsNotEmpty,
-} from 'class-validator';
+import { IsEmail, IsString, MinLength, MaxLength } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class UserRequestDTO {
   @IsEmail()
-  @IsNotEmpty()
   @ApiModelProperty({ example: 'example@google.com' })
   readonly email: string;
 
