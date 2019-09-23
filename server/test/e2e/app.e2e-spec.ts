@@ -35,43 +35,45 @@ describe('', () => {
   });
 
   describe('User flow (api/user):', () => {
+    const route = '/user';
+
     describe('[POST]: Create', () => {
       it('[201]: Create', async () => {
-        const { body } = await request.post('/user', 201, generateUser);
+        const { body } = await request.post(route, 201, generateUser);
         return await request.setPasport(authService.signIn(body));
       });
 
       it('[400]: Bad-Request', async () => {
-        return await request.post('/user', 400, generateBadUser);
+        return await request.post(route, 400, generateBadUser);
       });
 
       it('[409]: Conflict', async () => {
-        return await request.post('/user', 409, generateUser);
+        return await request.post(route, 409, generateUser);
       });
     });
 
     describe('[Get]: Reflection', () => {
       it('[401]: Unauthorized', async () => {
-        return await request.get('/user', 401);
+        return await request.get(route, 401);
       });
 
       it('[200]: OK', async () => {
-        return await request.getAuth('/user', 200);
+        return await request.getAuth(route, 200);
       });
     });
 
     describe('[Patch]: Update', () => {
       it('[401]: Unauthorized', async () => {
-        return await request.patch('/user', 401, generateUser);
+        return await request.patch(route, 401, generateUser);
       });
 
       it('[400]: Bad-Request', async () => {
-        return await request.patchAuth('/user', 400, generateBadUser);
+        return await request.patchAuth(route, 400, generateBadUser);
       });
 
       it('[200]: OK', async () => {
         const { body } = await request.patchAuth(
-          '/user',
+          route,
           200,
           new GenerateUser(),
         );
@@ -82,94 +84,98 @@ describe('', () => {
 
     describe('[Delete]: Delete', () => {
       it('[401]: Unauthorized', async () => {
-        return await request.delete('/user', 401);
+        return await request.delete(route, 401);
       });
 
       it('[200]: OK', async () => {
-        return await request.deleteAuth('/user', 200);
+        return await request.deleteAuth(route, 200);
       });
     });
   });
 
   describe('Auth flow (api/auth):', () => {
+    const route = '/auth';
+
     describe('[POST]: Create', () => {
       it('[401]: Unauthorized', async () => {
-        return await request.post('/auth', 401, new GenerateUser());
+        return await request.post(route, 401, new GenerateUser());
       });
 
       it('[400]: Bad-Request', async () => {
-        return await request.post('/auth', 400, generateBadUser);
+        return await request.post(route, 400, generateBadUser);
       });
 
       it('[201]: Create', async () => {
-        const { body } = await request.post('/auth', 201, generateUser);
+        const { body } = await request.post(route, 201, generateUser);
         return await request.setPasport(body);
       });
     });
 
     describe('[Patch]: Update', () => {
       it('[401]: Unauthorized', async () => {
-        return await request.patch('/auth', 401);
+        return await request.patch(route, 401);
       });
 
       it('[200]: OK', async () => {
-        const { body } = await request.patchAuth('/auth', 200);
+        const { body } = await request.patchAuth(route, 200);
         return await request.setPasport(body);
       });
     });
   });
 
   describe('Company flow (api/company):', () => {
+    const route = '/company';
+
     describe('[POST]: Create', () => {
       it('[201]: Create', async () => {
-        return await request.postAuth('/company', 201, generateCompany);
+        return await request.postAuth(route, 201, generateCompany);
       });
 
       it('[401]: Unauthorized', async () => {
-        return await request.post('/company', 401, generateCompany);
+        return await request.post(route, 401, generateCompany);
       });
 
       it('[400]: Bad-Request', async () => {
-        return await request.postAuth('/company', 400, generateBadCompany);
+        return await request.postAuth(route, 400, generateBadCompany);
       });
 
       it('[409]: Conflict', async () => {
-        return await request.postAuth('/company', 409, generateCompany);
+        return await request.postAuth(route, 409, generateCompany);
       });
     });
 
     describe('[Get]: Reflection all', () => {
       it('[200]: OK', async () => {
-        return await request.getAuth('/company', 200);
+        return await request.getAuth(route, 200);
       });
     });
 
     describe('[Get:{id}]: Reflection by id', () => {
       it('[200]: OK', async () => {
-        return await request.getAuth('/company/1', 200);
+        return await request.getAuth(route + '/1', 200);
       });
 
       it('[404]: Not Found', async () => {
-        return await request.getAuth('/company/9999', 404);
+        return await request.getAuth(route + '/9999', 404);
       });
     });
 
     describe('[Patch:{id}]: Update', () => {
       it('[404]: Not Found', async () => {
-        return await request.patchAuth('/company/999', 400, generateBadCompany);
+        return await request.patchAuth(route + '/8999', 400, generateBadCompany);
       });
 
       it('[401]: Unauthorized', async () => {
-        return await request.patch('/company/1', 401, generateCompany);
+        return await request.patch(route + '/1', 401, generateCompany);
       });
 
       it('[400]: Bad-Request', async () => {
-        return await request.patchAuth('/company/1', 400, generateBadCompany);
+        return await request.patchAuth(route + '/1', 400, generateBadCompany);
       });
 
       it('[200]: OK', async () => {
         return await request.patchAuth(
-          '/company/1',
+          route + '/1',
           200,
           new GenerateCompany(),
         );
@@ -178,15 +184,15 @@ describe('', () => {
 
     describe('[Delete:{id}]: Delete', () => {
       it('[404]: Not Found', async () => {
-        return await request.deleteAuth('/company/9999', 404);
+        return await request.deleteAuth(route + '/9999', 404);
       });
 
       it('[401]: Unauthorized', async () => {
-        return await request.delete('/company/1', 401);
+        return await request.delete(route + '/1', 401);
       });
 
       it('[200]: OK', async () => {
-        return await request.deleteAuth('/company/1', 200);
+        return await request.deleteAuth(route + '/1', 200);
       });
     });
   });
