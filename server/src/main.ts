@@ -14,10 +14,11 @@ async function bootstrap() {
     .setVersion(config.get('npm_package_version'))
     .setTitle(config.get('npm_package_name'))
     .setBasePath(config.get('PREFFIX'))
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('', app, document);
+  SwaggerModule.setup('api', app, document);
 
   await app
     .setGlobalPrefix(config.get('PREFFIX'))
