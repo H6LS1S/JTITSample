@@ -10,5 +10,5 @@ export class GenerateCompany implements CompanyRequestDTO {
 export class GenerateBadCompany implements GenerateCompany {
   name: string = internet.userName();
   email: string = internet.email();
-  website: string = internet.email();
+  website: string = internet.userName();
 }
