@@ -19,7 +19,10 @@ export class AuthService {
   async signIn(payload: UserRequestDTO): Promise<any> {
     return {
       expiresIn: this.configService.get('JWT_EXPIRES_TIME'),
-      token: this.jwtService.sign({ ...payload }),
+      token: this.jwtService.sign({
+        email: payload.email,
+        password: payload.password,
+      }),
     };
   }
 
