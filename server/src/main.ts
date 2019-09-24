@@ -3,6 +3,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
+import { join } from 'path';
+
 import { AppModule } from './app/app.module';
 import { ConfigService } from './config/config.service';
 
@@ -21,6 +23,9 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app
+    .useStaticAssets(join(__dirname, '..', config.get('FILE_DEST')), {
+      prefix: 'static',
+    })
     .setGlobalPrefix(config.get('PREFFIX'))
     .useGlobalPipes(new ValidationPipe())
     .enableCors()
