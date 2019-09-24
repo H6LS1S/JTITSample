@@ -23,12 +23,12 @@ export class CompanyController {
     @User() owner: UserEntity,
     @Body() payload: CompanyRequestDTO,
   ): Promise<CompanyEntity> {
-    return await this.companyService.createOne(payload, owner).catch(err => {
+    return await this.companyService.createOne(payload, owner).catch(() => {
       throw new HttpException(`Company already exists`, HttpStatus.CONFLICT);
     });
   }
 
-  @Get('all')
+  @Get()
   async selectAll(
     @Query() options: CompaniesRequestDTO,
   ): Promise<CompanyEntity[]> {
@@ -52,9 +52,12 @@ export class CompanyController {
     @Param('id') id: number,
     @Body() payload: CompanyRequestDTO,
   ): Promise<CompanyEntity> {
-    const company = await this.companyService.selectOneByID(id);
-    return await this.companyService.updateOne(company, payload).catch(() => {
+    const company = await this.companyService.selectOneByID(id).catch(() => {
       throw new HttpException('Company not found', HttpStatus.NOT_FOUND);
+    });
+
+    return await this.companyService.updateOne(company, payload).catch(() => {
+      throw new HttpException(`Company conflict`, HttpStatus.CONFLICT);
     });
   }
 
@@ -62,7 +65,11 @@ export class CompanyController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   async deleteOne(@Param('id') id: number): Promise<any> {
-    return await this.companyService.deleteOne(id).catch(() => {
+    const company = await this.companyService.selectOneByID(id).catch(() => {
+      throw new HttpException('Company not found', HttpStatus.NOT_FOUND);
+    });
+
+    return await this.companyService.deleteOne(company.id).catch(() => {
       throw new HttpException('Company not found', HttpStatus.NOT_FOUND);
     });
   }
