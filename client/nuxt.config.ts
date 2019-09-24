@@ -39,7 +39,7 @@ const config: Configuration = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/mixins', '~/plugins/vuetify'],
+  plugins: ['~/mixins', '~/plugins/vuetify', '~/plugins/vee-validate'],
   /*
    ** Modules to load before mounting the App
    */
