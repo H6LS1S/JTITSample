@@ -7,6 +7,10 @@ import {
   GenerateCompany,
   GenerateBadCompany,
 } from '../fixtures/company.fixtures';
+import {
+  GenerateEmployee,
+  GenerateBadEmployee,
+} from '../fixtures/employee.fixtures';
 
 import { AppModule } from '../../src/app/app.module';
 import { AuthService } from '../../src/modules/auth/auth.service';
@@ -21,6 +25,9 @@ describe('', () => {
 
   let generateCompany = new GenerateCompany();
   let generateBadCompany = new GenerateBadCompany();
+
+  let generateEmployee = new GenerateEmployee(2);
+  let generateBadEmployee = new GenerateBadEmployee(1);
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -128,6 +135,7 @@ describe('', () => {
 
     describe('[POST]: Create', () => {
       it('[201]: Create', async () => {
+        await request.postAuth(route, 201, new GenerateCompany());
         return await request.postAuth(route, 201, generateCompany);
       });
 
@@ -178,6 +186,80 @@ describe('', () => {
           route + '/1',
           200,
           new GenerateCompany(),
+        );
+      });
+    });
+
+    describe('[Delete:{id}]: Delete', () => {
+      it('[404]: Not Found', async () => {
+        return await request.deleteAuth(route + '/9999', 404);
+      });
+
+      it('[401]: Unauthorized', async () => {
+        return await request.delete(route + '/1', 401);
+      });
+
+      it('[200]: OK', async () => {
+        return await request.deleteAuth(route + '/1', 200);
+      });
+    });
+  });
+
+  describe('Employee flow (api/employee):', () => {
+    const route = '/employee';
+
+    describe('[POST]: Create', () => {
+      it('[201]: Create', async () => {
+        return await request.postAuth(route, 201, generateEmployee);
+      });
+
+      it('[401]: Unauthorized', async () => {
+        return await request.post(route, 401, generateEmployee);
+      });
+
+      it('[400]: Bad-Request', async () => {
+        return await request.postAuth(route, 400, generateBadEmployee);
+      });
+
+      it('[409]: Conflict', async () => {
+        return await request.postAuth(route, 409, generateEmployee);
+      });
+    });
+
+    describe('[Get]: Reflection all', () => {
+      it('[200]: OK', async () => {
+        return await request.getAuth(route, 200);
+      });
+    });
+
+    describe('[Get:{id}]: Reflection by id', () => {
+      it('[200]: OK', async () => {
+        return await request.getAuth(route + '/1', 200);
+      });
+
+      it('[404]: Not Found', async () => {
+        return await request.getAuth(route + '/9999', 404);
+      });
+    });
+
+    describe('[Patch:{id}]: Update', () => {
+      it('[404]: Not Found', async () => {
+        return await request.patchAuth(route + '/8999', 400, generateBadEmployee);
+      });
+
+      it('[401]: Unauthorized', async () => {
+        return await request.patch(route + '/1', 401, generateEmployee);
+      });
+
+      it('[400]: Bad-Request', async () => {
+        return await request.patchAuth(route + '/1', 400, generateBadEmployee);
+      });
+
+      it('[200]: OK', async () => {
+        return await request.patchAuth(
+          route + '/1',
+          200,
+          new GenerateEmployee(2),
         );
       });
     });

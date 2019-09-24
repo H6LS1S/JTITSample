@@ -4,10 +4,12 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 
 import { UserEntity } from '../user/user.entity';
+import { EmployeeEntity } from '../employee/employee.entity';
 
 @Entity('Company')
 export class CompanyEntity extends BaseEntity {
@@ -45,6 +47,14 @@ export class CompanyEntity extends BaseEntity {
   })
   @JoinColumn({ name: 'owner' })
   owner: UserEntity;
+
+  @OneToMany(_type => EmployeeEntity, employee => employee.company, {
+    nullable: true,
+    cascade: true,
+    eager: true,
+  })
+  @JoinColumn({ name: 'employees' })
+  employees: EmployeeEntity[];
 
   @Column('datetime', {
     nullable: false,
