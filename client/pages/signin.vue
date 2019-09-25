@@ -57,8 +57,10 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { ValidationObserver } from 'vee-validate';
+import { Action } from 'vuex-class';
 
 @Component({
+  middleware: ['guest'],
   components: {
     ValidationObserver,
     VTextFieldValidation: () =>
@@ -66,6 +68,8 @@ import { ValidationObserver } from 'vee-validate';
   },
 })
 export default class SignInPage extends Vue {
+  @Action('authorizationUser') authorizationUser;
+
   private show1: boolean = false;
   private progress: boolean = false;
   private userCredentials = {
@@ -81,7 +85,9 @@ export default class SignInPage extends Vue {
     const validation = await this.$refs.observer.validate();
     if (!validation) return;
     this.progress = !this.progress;
-    // TODO: AXIOS POST REQUEST FOR AUTHORIAZATION
+    return await this.authorizationUser(this.userCredentials).catch(() => {
+      // TODO: Add error handle
+    });
   }
 }
 </script>

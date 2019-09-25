@@ -29,6 +29,15 @@ export const getters: GetterTree<RootState, RootState> = {
   },
 };
 
-export const actions: ActionTree<RootState, RootState> = {};
+export const actions: ActionTree<RootState, RootState> = {
+  async registrationUser({ dispatch }, userCredentials) {
+    await this.$axios.$post('user', userCredentials);
+    return await dispatch('authorizationUser', userCredentials);
+  },
+
+  async authorizationUser({}, userCredentials) {
+    return await this.$auth.loginWith('local', { data: userCredentials });
+  },
+};
 
 export const mutations: MutationTree<RootState> = {};

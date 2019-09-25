@@ -13,6 +13,10 @@
         <v-img :src="appBackground" :gradient="getGradient()" />
       </template>
 
+      <v-app-bar-nav-icon @click="logout">
+        <v-icon>mdi-logout</v-icon>
+      </v-app-bar-nav-icon>
+
       <v-toolbar-title class="font-weight-bold">JTITSample</v-toolbar-title>
 
       <v-spacer />
@@ -51,6 +55,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 
 @Component({
+  middleware: ['auth'],
   components: {
     PageLink: () => import('~/components/PageLink'),
   },
@@ -68,6 +73,10 @@ export default class DashboardLayout extends Vue {
 
   private getGradient() {
     return `to top right, rgba(81, 176, 255, .7), rgba(63, 81, 181, .7)`;
+  }
+
+  private logout() {
+    return this.$auth.logout();
   }
 }
 </script>

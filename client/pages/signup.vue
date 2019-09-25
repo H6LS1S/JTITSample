@@ -98,8 +98,10 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { ValidationObserver } from 'vee-validate';
+import { Action } from 'vuex-class';
 
 @Component({
+  middleware: ['guest'],
   components: {
     ValidationObserver,
     VTextFieldValidation: () =>
@@ -119,6 +121,8 @@ import { ValidationObserver } from 'vee-validate';
   },
 })
 export default class SignUpPage extends Vue {
+  @Action('registrationUser') registrationUser;
+
   private step: number = 1;
   private show1: boolean = false;
   private show2: boolean = false;
@@ -144,7 +148,11 @@ export default class SignUpPage extends Vue {
     const validation = await this.$refs.observer.validate();
     if (validation && this.step === 2) {
       this.progress = !this.progress;
-      // TODO: AXIOS POST REQUEST FOR REGISTRATION
+      return await this.registrationUser(this.userCredentials).catch(err => {
+        // TODO: Add error handle
+        this.progress = !this.progress;
+        this.step = 1;
+      });
     }
     return this.step++;
   }

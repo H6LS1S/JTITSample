@@ -41,9 +41,37 @@ const config: Configuration = {
    */
   plugins: ['~/mixins', '~/plugins/vuetify', '~/plugins/vee-validate'],
   /*
+   ** Axios module options
+   */
+  axios: {
+    baseURL: 'http://127.0.0.1:8081/api',
+  },
+  /*
+   ** Authentication module options
+   */
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: '/auth', method: 'post', propertyName: 'token' },
+          user: { url: '/user', method: 'get', propertyName: '' },
+          logout: false,
+        },
+        tokenRequired: true,
+        tokenType: 'Bearer',
+      },
+    },
+    redirect: {
+      home: '/',
+      login: '/signin',
+      logout: '/signin',
+      callback: '/signin',
+    },
+  },
+  /*
    ** Modules to load before mounting the App
    */
-  buildModules: ['@nuxt/typescript-build'],
+  buildModules: ['@nuxt/typescript-build', '@nuxtjs/auth', '@nuxtjs/axios'],
   build: {
     transpile: ['vuetify/lib'],
     plugins: [new VuetifyLoaderPlugin()],
