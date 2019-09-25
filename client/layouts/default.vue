@@ -1,7 +1,7 @@
 <template>
-  <v-app id="inspire">
+  <v-app>
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="4">
+      <v-col cols="12" xs="12" sm="8" md="4" lg="3">
         <v-content>
           <v-container class="fill-height" fluid>
             <nuxt />
