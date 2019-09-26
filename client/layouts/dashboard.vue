@@ -21,7 +21,7 @@
 
       <v-spacer />
 
-      <PageLink v-for="(page, i) in pages" :key="i" :page="page" />
+      <PageLink v-for="(page, i) in pages" :key="i" :page="page" icon />
     </v-app-bar>
 
     <v-row align="center" justify="center">
@@ -37,7 +37,7 @@
     <v-footer padless dark align="center">
       <v-card flat tile width="100%" class="primary">
         <v-card-text>
-          <PageLink v-for="(page, i) in pages" :key="i" :page="page" />
+          <PageLink v-for="(page, i) in pages" :key="i" :page="page" icon />
         </v-card-text>
 
         <v-divider />

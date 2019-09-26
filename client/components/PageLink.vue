@@ -1,5 +1,6 @@
 <template>
-  <v-btn v-bind="page.attr" dark icon class="mx-3">
+  <v-btn v-bind="{ ...$attrs, ...page.attr }" v-on="$listeners" class="mx-3">
+    <span v-if="page.title !== undefined" class="mx-3">{{ page.title }}</span>
     <v-icon v-html="page.icon" />
   </v-btn>
 </template>
