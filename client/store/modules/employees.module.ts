@@ -19,6 +19,7 @@ export interface Header {
 }
 
 class EmployeesState {
+  currentPage: number = 1;
   employees!: Employee[];
   employee!: Employee;
   headers: Header[] = [
@@ -45,6 +46,10 @@ class EmployeesGetters extends Getters<EmployeesState> {
 }
 
 class EmployeesMutations extends Mutations<EmployeesState> {
+  setCurrentPage(id: number): void {
+    this.state.currentPage = id;
+  }
+  
   setEmployees(data: Employee[]): void {
     this.state.employees = data;
   }
@@ -71,7 +76,8 @@ export class EmployeesActions extends Actions<
   }
 
   async selectEmployees(): Promise<void> {
-    const data = await this.store.$axios.$get(`employee/`);
+    const params = { page: this.state.currentPage, limit: 10 };
+    const data = await this.store.$axios.$get(`employee/`, { params: params });
     return this.mutations.setEmployees(data);
   }
 
