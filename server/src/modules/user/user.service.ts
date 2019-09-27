@@ -17,7 +17,7 @@ export class UserService {
   }
 
   async selectOne(user: UserRequestDTO): Promise<UserEntity> {
-    return await this.userRepository.findOne({
+    return await this.userRepository.findOneOrFail({
       where: {
         email: user.email,
       },

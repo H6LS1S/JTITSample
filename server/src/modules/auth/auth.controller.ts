@@ -1,16 +1,10 @@
-import { Controller, UseGuards } from '@nestjs/common';
-import { Body, Post, Patch } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-
-import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
-
-import { User } from '../../common/decorators/user.decorator';
+import { Controller, UnauthorizedException, Body, Post } from '@nestjs/common';
+import { ApiUseTags } from '@nestjs/swagger';
 
 import { JwtStrategy } from './strateges/jwt.strategy';
 import { AuthService } from './auth.service';
 
 import { UserRequestDTO } from '../user/dto/user.dto';
-import { UserEntity } from '../user/user.entity';
 
 @ApiUseTags('auth')
 @Controller('auth')
@@ -23,13 +17,9 @@ export class AuthController {
   @Post()
   async create(@Body() payload: UserRequestDTO): Promise<any> {
     const user = await this.jwtStrategy.validate(payload);
-    return await this.authService.signIn(user);
-  }
-
-  @Patch()
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  async update(@User() payload: UserEntity): Promise<any> {
-    return await this.authService.signIn(payload);
+    if (await this.authService.compareHash(payload.password, user.password)) {
+      return await this.authService.createToken(user);
+    }
+    throw new UnauthorizedException();
   }
 }
