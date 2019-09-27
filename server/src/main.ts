@@ -24,7 +24,7 @@ async function bootstrap() {
 
   await app
     .useStaticAssets(join(__dirname, '..', config.get('FILE_DEST')), {
-      prefix: 'static',
+      prefix: config.get('FILE_DEST'),
     })
     .setGlobalPrefix(config.get('PREFFIX'))
     .useGlobalPipes(new ValidationPipe())

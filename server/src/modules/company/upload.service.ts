@@ -40,6 +40,6 @@ export class UploadService implements MulterOptionsFactory {
   saveFile(file: any) {
     const fileName = v4() + extname(file.originalname);
     writeFileSync(this.path + fileName, file.buffer);
-    return fileName;
+    return this.configService.get('FILE_DEST') + fileName;
   }
 }
