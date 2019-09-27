@@ -145,9 +145,9 @@ describe('', () => {
       });
     });
 
-    describe('[Get]: Reflection all', () => {
+    describe('[Get]: Reflection limited', () => {
       it('[200]: OK', async () => {
-        return await request.getAuth(route, 200);
+        return await request.getAuth(`${route}?page=1&limit=10`, 200);
       });
     });
 
@@ -219,9 +219,9 @@ describe('', () => {
       });
     });
 
-    describe('[Get]: Reflection all', () => {
+    describe('[Get]: Reflection limited', () => {
       it('[200]: OK', async () => {
-        return await request.getAuth(route, 200);
+        return await request.getAuth(`${route}?page=1&limit=10`, 200);
       });
     });
 
