@@ -17,8 +17,8 @@ import { AuthService } from '../../src/modules/auth/auth.service';
 
 describe('', () => {
   let app: INestApplication;
-  let authService: AuthService;
   let request: Request;
+  let authService: AuthService;
 
   let generateUser = new GenerateUser();
   let generateBadUser = new GenerateBadUser();
@@ -47,7 +47,7 @@ describe('', () => {
     describe('[POST]: Create', () => {
       it('[201]: Create', async () => {
         const { body } = await request.post(route, 201, generateUser);
-        return await request.setPasport(authService.signIn(body));
+        return await request.setPasport(authService.createToken(body));
       });
 
       it('[400]: Bad-Request', async () => {
@@ -70,6 +70,8 @@ describe('', () => {
     });
 
     describe('[Patch]: Update', () => {
+      generateUser = new GenerateUser()
+
       it('[401]: Unauthorized', async () => {
         return await request.patch(route, 401, generateUser);
       });
@@ -79,13 +81,8 @@ describe('', () => {
       });
 
       it('[200]: OK', async () => {
-        const { body } = await request.patchAuth(
-          route,
-          200,
-          new GenerateUser(),
-        );
-        generateUser = body;
-        return await request.setPasport(authService.signIn(body));
+        await request.patchAuth(route, 200, generateUser);
+        return await request.setPasport(authService.createToken(generateUser));
       });
     });
 
@@ -104,8 +101,15 @@ describe('', () => {
     const route = '/auth';
 
     describe('[POST]: Create', () => {
-      it('[401]: Unauthorized', async () => {
+      it('[401]: Unauthorized - Unknow user', async () => {
         return await request.post(route, 401, new GenerateUser());
+      });
+
+      it('[401]: Unauthorized - Wrong password', async () => {
+        return await request.post(route, 401, {
+          email: generateUser.email,
+          password: 'password111',
+        });
       });
 
       it('[400]: Bad-Request', async () => {
@@ -114,17 +118,6 @@ describe('', () => {
 
       it('[201]: Create', async () => {
         const { body } = await request.post(route, 201, generateUser);
-        return await request.setPasport(body);
-      });
-    });
-
-    describe('[Patch]: Update', () => {
-      it('[401]: Unauthorized', async () => {
-        return await request.patch(route, 401);
-      });
-
-      it('[200]: OK', async () => {
-        const { body } = await request.patchAuth(route, 200);
         return await request.setPasport(body);
       });
     });
