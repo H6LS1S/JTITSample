@@ -52,7 +52,7 @@ export class CompanyController {
 
     return {
       items,
-      pages: Math.floor(countAll / Number(options.limit)),
+      pages: Math.floor((countAll - 1) / Number(options.limit)),
     };
   }
 
