@@ -12,7 +12,11 @@ import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { User } from '../../common/decorators/user.decorator';
 import { UserEntity } from '../user/user.entity';
 
-import { CompanyRequestDTO, CompaniesRequestDTO } from './dto/company.dto';
+import {
+  CompanyRequestDTO,
+  CompaniesRequestDTO,
+  CompanyResponseDTO,
+} from './dto/company.dto';
 import { CompanyService } from './company.service';
 import { UploadService } from './upload.service';
 import { CompanyEntity } from './company.entity';
@@ -40,11 +44,16 @@ export class CompanyController {
   @Get()
   async selectAll(
     @Query() options: CompaniesRequestDTO,
-  ): Promise<CompanyEntity[]> {
-    return await this.companyService.selectAll({
+  ): Promise<CompanyResponseDTO> {
+    const [items, countAll] = await this.companyService.selectAll({
       take: Number(options.limit),
       skip: Number(options.limit) * Number(options.page),
     });
+
+    return {
+      items,
+      pages: Math.floor(countAll / Number(options.limit)),
+    };
   }
 
   @Get(':id')

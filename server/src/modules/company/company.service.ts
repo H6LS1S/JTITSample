@@ -22,8 +22,10 @@ export class CompanyService {
     return await this.companyRepository.save({ ...company, owner });
   }
 
-  async selectAll(options: PaginationRequestDTO): Promise<CompanyEntity[]> {
-    return await await this.companyRepository.find(options);
+  async selectAll(
+    options: PaginationRequestDTO,
+  ): Promise<[CompanyEntity[], number]> {
+    return await this.companyRepository.findAndCount(options);
   }
 
   async selectOneByID(id: number): Promise<CompanyEntity> {

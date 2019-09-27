@@ -7,6 +7,8 @@ import {
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
+import { CompanyEntity } from '../company.entity';
+
 export class CompanyRequestDTO {
   @IsString()
   @IsNotEmpty()
@@ -24,12 +26,17 @@ export class CompanyRequestDTO {
   readonly website: string;
 }
 
+export class CompanyResponseDTO {
+  items: CompanyEntity[];
+  pages: number;
+}
+
 export class CompaniesRequestDTO {
   @IsString()
-  @ApiModelProperty({ example: '0', default: '0' })
-  readonly page: string = '0';
+  @ApiModelProperty({ example: '1', default: '1' })
+  readonly page: string = '1';
 
   @IsString()
-  @ApiModelProperty({ example: '0', default: '10' })
+  @ApiModelProperty({ example: '10', default: '10' })
   readonly limit: string = '10';
 }
