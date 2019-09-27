@@ -31,3 +31,18 @@ export class EmployeeRequestDTO {
   @ApiModelProperty({ example: 1 })
   company: any;
 }
+
+export class EmployeesResponseDTO {
+  items: EmployeeRequestDTO[];
+  pages: number;
+}
+
+export class EmployeesRequestDTO {
+  @IsString()
+  @ApiModelProperty({ example: '1', default: '1' })
+  readonly page: string = '1';
+
+  @IsString()
+  @ApiModelProperty({ example: '10', default: '10' })
+  readonly limit: string = '10';
+}

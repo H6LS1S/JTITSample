@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 
+import { PaginationRequestDTO } from './dto/pagination.dto';
 import { EmployeeRequestDTO } from './dto/employee.dto';
 import { EmployeeEntity } from './employee.entity';
 
@@ -16,8 +17,10 @@ export class EmployeeService {
     return await this.employeeRepository.save(employee);
   }
 
-  async selectAll(): Promise<EmployeeEntity[]> {
-    return await await this.employeeRepository.find();
+  async selectAll(
+    options: PaginationRequestDTO,
+  ): Promise<[EmployeeEntity[], number]> {
+    return await this.employeeRepository.findAndCount(options);
   }
 
   async selectOneByID(id: number): Promise<EmployeeEntity> {

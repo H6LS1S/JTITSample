@@ -1,11 +1,15 @@
-import { Post, Get, Patch, Delete, Param, Body } from '@nestjs/common';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { Param, Query, Body, HttpException, HttpStatus } from '@nestjs/common';
+import { Post, Get, Patch, Delete } from '@nestjs/common';
 import { Controller, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 
-import { EmployeeRequestDTO } from './dto/employee.dto';
+import {
+  EmployeeRequestDTO,
+  EmployeesRequestDTO,
+  EmployeesResponseDTO,
+} from './dto/employee.dto';
 import { EmployeeService } from './employee.service';
 import { EmployeeEntity } from './employee.entity';
 
@@ -37,8 +41,18 @@ export class EmployeeController {
   }
 
   @Get()
-  async selectAll(): Promise<EmployeeEntity[]> {
-    return await this.employeeService.selectAll();
+  async selectAll(
+    @Query() options: EmployeesRequestDTO,
+  ): Promise<EmployeesResponseDTO> {
+    const [items, countAll] = await this.employeeService.selectAll({
+      take: Number(options.limit),
+      skip: Number(options.limit) * Number(options.page),
+    });
+
+    return {
+      items,
+      pages: Math.floor(countAll / Number(options.limit)),
+    };
   }
 
   @Get(':id')
