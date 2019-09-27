@@ -15,7 +15,7 @@ import { UserEntity } from '../user/user.entity';
 import {
   CompanyRequestDTO,
   CompaniesRequestDTO,
-  CompanyResponseDTO,
+  CompaniesResponseDTO,
 } from './dto/company.dto';
 import { CompanyService } from './company.service';
 import { UploadService } from './upload.service';
@@ -44,7 +44,7 @@ export class CompanyController {
   @Get()
   async selectAll(
     @Query() options: CompaniesRequestDTO,
-  ): Promise<CompanyResponseDTO> {
+  ): Promise<CompaniesResponseDTO> {
     const [items, countAll] = await this.companyService.selectAll({
       take: Number(options.limit),
       skip: Number(options.limit) * Number(options.page),

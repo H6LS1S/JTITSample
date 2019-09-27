@@ -26,7 +26,7 @@ export class CompanyRequestDTO {
   readonly website: string;
 }
 
-export class CompanyResponseDTO {
+export class CompaniesResponseDTO {
   items: CompanyEntity[];
   pages: number;
 }
