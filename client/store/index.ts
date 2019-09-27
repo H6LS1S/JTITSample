@@ -4,6 +4,9 @@ import { Store } from 'vuex';
 
 import { createStore } from 'vuex-smart-module';
 
+import { CompaniesModule } from './modules/companies.module';
+import { EmployeesModule } from './modules/employees.module';
+
 interface PagesAttr {
   to?: string;
   exact?: boolean;
@@ -70,6 +73,10 @@ const RootModule = new Module({
   getters: RootGetters,
   mutations: RootMutations,
   actions: RootActions,
+  modules: {
+    CompaniesModule,
+    EmployeesModule,
+  },
 });
 
 export default (): Store<any> =>
