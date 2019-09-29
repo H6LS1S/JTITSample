@@ -1,7 +1,7 @@
 <template>
   <ValidationProvider :vid="vid" :rules="rules" :name="$attrs.label">
     <v-text-field
-      v-model="value"
+      v-model="innerValue"
       v-bind="$attrs"
       v-on="$listeners"
       :success="valid"
@@ -21,9 +21,19 @@ import { ValidationProvider } from 'vee-validate';
   },
 })
 export default class VTextFieldValidation extends Vue {
+  @Prop({ type: String, required: true }) value: string;
   @Prop({ type: String, required: true }) rules: string;
   @Prop({ type: String, required: false }) vid: string;
 
-  private value: string = '';
+  @Watch('value')
+  onChangeValue(val: string) {
+    this.innerValue = val;
+  }
+
+  created() {
+    this.innerValue = this.value;
+  }
+
+  private innerValue!: string;
 }
 </script>
