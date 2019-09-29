@@ -79,8 +79,18 @@ export class CompaniesActions extends Actions<
   }
 
   async updateCompany(data: Company): Promise<void> {
-    await this.store.$axios.$patch(`company/${data.id}`, data);
-    return await this.selectCompanies();
+    const { id } = this.state.company;
+    await this.store.$axios.$patch(`company/${id}`, data);
+    return await this.selectCompany(data.id);
+  }
+
+  async updateCompanyLogotype(data: any): Promise<void> {
+    const { id } = this.state.company;
+    return await this.store.$axios
+      .$put(`company/${id}/logotype`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(data => this.mutations.setCompany(data));
   }
 
   async deleteCompany(id: number): Promise<void> {

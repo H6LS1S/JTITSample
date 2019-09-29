@@ -28,7 +28,7 @@ class EmployeesState {
     { text: 'Email', value: 'email' },
     { text: 'Phone', value: 'phone' },
     { text: '', value: 'action', sortable: false },
-  ]
+  ];
 }
 
 class EmployeesGetters extends Getters<EmployeesState> {
@@ -49,7 +49,7 @@ class EmployeesMutations extends Mutations<EmployeesState> {
   setCurrentPage(id: number): void {
     this.state.currentPage = id;
   }
-  
+
   setEmployees(data: Employee[]): void {
     this.state.employees = data;
   }
