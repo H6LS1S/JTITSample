@@ -19,7 +19,7 @@ export class DefaultEmployees1569610984179 implements MigrationInterface {
       firstName: string = name.findName();
       lastName: string = name.lastName();
       email: string = internet.email();
-      phone: string = '+380' + helpers.replaceSymbolWithNumber('#########');
+      phone: string = '+38097' + helpers.replaceSymbolWithNumber('#######');
       company: CompanyEntity;
     }
 
