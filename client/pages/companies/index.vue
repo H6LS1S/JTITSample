@@ -1,17 +1,19 @@
 <template>
-  <v-row>
+  <v-row v-if="getCompanies" justify="center">
     <v-pagination
-      v-if="companies.pages > 1"
+      v-if="getCompanies.pages > 1"
       v-model="currentPage"
-      :length="companies.pages"
+      :length="getCompanies.pages"
       :total-visible="5"
     />
 
     <v-col
-      v-for="company in companies.items"
+      v-for="company in getCompanies.items"
       :key="company.id"
-      class="d-flex child-flex"
-      cols="4"
+      xs="12"
+      sm="12"
+      md="6"
+      lg="4"
     >
       <v-card>
         <v-img
@@ -20,18 +22,20 @@
           :aspect-ratio="16 / 9"
           class="white--text"
         >
-          <v-row justify="end" class="mb-n9">
-            <PageLink :page="getButtonEmail(company.email)" icon dark />
-            <PageLink :page="getButtonOpenInView(company.website)" icon dark />
-          </v-row>
-          <v-row class="fill-height">
-            <v-card-title class="align-end fill-height">
-              {{ company.name }}
-            </v-card-title>
+          <v-row align-space-around dense class="fill-height">
+            <v-col sm="12" class="text-right">
+              <PageLink :page="getButtonEmail(company.email)" icon dark />
+              <PageLink :page="getButtonOpen(company.website)" icon dark />
+            </v-col>
+            <v-col sm="12">
+              <v-card-title class="align-end fill-height">
+                {{ company.name }}
+              </v-card-title>
+            </v-col>
           </v-row>
         </v-img>
         <v-card-actions>
-          <PageLink :page="getButtonUpdate()" icon />
+          <PageLink :page="getButtonUpdate(company.id)" icon />
           <PageLink
             :page="getButtonDelete()"
             @click="deleteCompany(company.id)"
@@ -61,10 +65,10 @@ import { Action, Getter, Mutation } from 'vuex-class';
 export default class CompaniesPage extends Vue {
   @Action('CompaniesModule/selectCompanies') selectCompanies;
   @Action('CompaniesModule/deleteCompany') deleteCompany;
-  
+
   @Mutation('CompaniesModule/setCurrentPage') setCurrentPage;
 
-  @Getter('CompaniesModule/getCompanies') companies;
+  @Getter('CompaniesModule/getCompanies') getCompanies;
 
   @Watch('currentPage')
   onChangeCurrentPage(id: number) {
@@ -74,7 +78,9 @@ export default class CompaniesPage extends Vue {
 
   private currentPage: number = 1;
 
-  private getButtonOpenInView(website) {
+  private editCompany(id) {}
+
+  private getButtonOpen(website) {
     return {
       icon: 'mdi-open-in-new',
       attr: {
@@ -93,9 +99,10 @@ export default class CompaniesPage extends Vue {
     };
   }
 
-  private getButtonUpdate() {
+  private getButtonUpdate(id) {
     return {
       icon: 'mdi-pencil-outline',
+      attr: { to: `/companies/${id}`, exact: true },
     };
   }
 

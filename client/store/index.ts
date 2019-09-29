@@ -36,11 +36,16 @@ class RootState {
       },
     },
   ];
+  auth: any;
 }
 
 class RootGetters extends Getters<RootState> {
   get getPages(): Pages[] {
     return this.state.pages;
+  }
+
+  get isAuth() {
+    return this.state.auth.loggedIn;
   }
 }
 
