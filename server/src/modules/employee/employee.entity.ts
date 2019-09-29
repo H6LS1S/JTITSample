@@ -39,6 +39,10 @@ export class EmployeeEntity extends BaseEntity {
   })
   phone: string;
 
+  @Column('varchar', {
+    nullable: false,
+    name: 'companyId',
+  })
   @ManyToOne(_type => CompanyEntity, company => company.employees, {
     nullable: false,
   })

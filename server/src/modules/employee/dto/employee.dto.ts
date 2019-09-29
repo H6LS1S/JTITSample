@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { EmployeeEntity } from '../employee.entity';
 
 export class EmployeeRequestDTO {
   @IsString()
@@ -33,7 +34,7 @@ export class EmployeeRequestDTO {
 }
 
 export class EmployeesResponseDTO {
-  items: EmployeeRequestDTO[];
+  items: EmployeeEntity[];
   pages: number;
 }
 
