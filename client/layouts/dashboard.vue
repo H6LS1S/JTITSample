@@ -25,7 +25,7 @@
     </v-app-bar>
 
     <v-row align="center" justify="center">
-      <v-col cols="12" xs="12" sm="8" md="4" lg="3">
+      <v-col xs="12" sm="10" xl="8">
         <v-content>
           <v-container class="fill-height" fluid>
             <nuxt />

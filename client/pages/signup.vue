@@ -1,5 +1,5 @@
 <template>
-  <v-col mx="3">
+  <v-col>
     <v-card>
       <ValidationObserver
         v-slot="{ invalid }"

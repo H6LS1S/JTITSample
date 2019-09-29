@@ -55,6 +55,11 @@ import { Action, Getter, Mutation } from 'vuex-class';
 
 @Component({
   layout: 'dashboard',
+  head() {
+    return {
+      title: 'Companies',
+    };
+  },
   components: {
     PageLink: () => import('~/components/PageLink'),
   },
@@ -78,9 +83,7 @@ export default class CompaniesPage extends Vue {
 
   private currentPage: number = 1;
 
-  private editCompany(id) {}
-
-  private getButtonOpen(website) {
+  private getButtonOpen(website: string) {
     return {
       icon: 'mdi-open-in-new',
       attr: {
@@ -90,7 +93,7 @@ export default class CompaniesPage extends Vue {
     };
   }
 
-  private getButtonEmail(email) {
+  private getButtonEmail(email: string) {
     return {
       icon: 'mdi-email-send-outline',
       attr: {
@@ -99,7 +102,7 @@ export default class CompaniesPage extends Vue {
     };
   }
 
-  private getButtonUpdate(id) {
+  private getButtonUpdate(id: number) {
     return {
       icon: 'mdi-pencil-outline',
       attr: { to: `/companies/${id}`, exact: true },

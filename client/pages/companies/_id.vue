@@ -55,14 +55,14 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-card-actions> </v-card-actions>
+        <v-card-actions />
       </v-card>
     </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { Action, Getter, Mutation } from 'vuex-class';
 
 @Component({
