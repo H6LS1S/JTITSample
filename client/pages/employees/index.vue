@@ -1,81 +1,82 @@
 <template>
   <v-row v-if="getEmployees" justify="center">
+    <v-dialog max-width="500px">
+      <template v-slot:activator="{ on }">
+        <PageLink
+          v-on="on"
+          :page="getButtonCreate()"
+          @click="selectCompanies(0)"
+          fixed bottom right fab
+          color="primary"
+        />
+      </template>
+      <v-card v-if="getCompanies">
+        <v-card-title>
+          <v-spacer />
+          <PageLink
+            :page="getButtonSave()"
+            @click="saveEmployee()"
+            icon
+          />
+        </v-card-title>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="headline">
+              <v-select
+                v-model="employee.company"
+                :items="getCompanies.items"
+                item-text="name"
+                item-value="id"
+                label="Company"
+              />
+              <v-row>
+                <v-col sm="12" md="6">
+                  <VTextFieldValidation
+                    v-model="employee.firstName"
+                    type="text"
+                    rules="required"
+                    label="Firs name"
+                  />
+                </v-col>
+                <v-col sm="12" md="6">
+                  <VTextFieldValidation
+                    v-model="employee.lastName"
+                    type="text"
+                    rules="required"
+                    label="Last name"
+                  />
+                </v-col>
+              </v-row>
+            </v-list-item-title>
+            <v-list-item-title class="headline">
+              <VTextFieldValidation
+                v-model="employee.email"
+                type="email"
+                rules="required|email"
+                label="Email"
+              />
+            </v-list-item-title>
+            <v-list-item-title class="headline">
+              <VTextFieldValidation
+                v-model="employee.phone"
+                type="tel"
+                rules="required|phone"
+                label="Phone"
+              >
+              </VTextFieldValidation>
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-card-actions />
+      </v-card>
+    </v-dialog>
     <v-data-table :headers="headers" :items="getEmployees.items">
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>Employees</v-toolbar-title>
           <v-divider class="mx-4" inset vertical />
           <v-spacer />
-          <v-dialog max-width="500px">
-            <template v-slot:activator="{ on }">
-              <PageLink
-                v-on="on"
-                :page="getButtonCreate()"
-                @click="selectCompanies(0)"
-                icon
-              />
-            </template>
-            <v-card v-if="getCompanies">
-              <v-card-title>
-                <v-spacer />
-                <PageLink
-                  :page="getButtonSave()"
-                  @click="saveEmployee()"
-                  icon
-                />
-              </v-card-title>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title class="headline">
-                    <v-select
-                      v-model="employee.company"
-                      :items="getCompanies.items"
-                      item-text="name"
-                      item-value="id"
-                      label="Company"
-                    />
-                    <v-row>
-                      <v-col sm="12" md="6">
-                        <VTextFieldValidation
-                          v-model="employee.firstName"
-                          type="text"
-                          rules="required"
-                          label="Firs name"
-                        />
-                      </v-col>
-                      <v-col sm="12" md="6">
-                        <VTextFieldValidation
-                          v-model="employee.lastName"
-                          type="text"
-                          rules="required"
-                          label="Last name"
-                        />
-                      </v-col>
-                    </v-row>
-                  </v-list-item-title>
-                  <v-list-item-title class="headline">
-                    <VTextFieldValidation
-                      v-model="employee.email"
-                      type="email"
-                      rules="required|email"
-                      label="Email"
-                    />
-                  </v-list-item-title>
-                  <v-list-item-title class="headline">
-                    <VTextFieldValidation
-                      v-model="employee.phone"
-                      type="tel"
-                      rules="required|phone"
-                      label="Phone"
-                    >
-                    </VTextFieldValidation>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-
-              <v-card-actions />
-            </v-card>
-          </v-dialog>
         </v-toolbar>
       </template>
       <template v-slot:item.action="{ item }">

@@ -7,6 +7,55 @@
       :total-visible="5"
     />
 
+    <v-spacer />
+    <v-dialog max-width="500px">
+      <template v-slot:activator="{ on }">
+        <PageLink
+          v-on="on"
+          :page="getButtonCreate()"
+          fixed bottom right fab
+          color="primary"
+        />
+      </template>
+      <v-card>
+        <v-card-title>
+          <v-spacer />
+          <PageLink :page="getButtonSave()" @click="saveCompany()" icon />
+        </v-card-title>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="headline">
+              <VTextFieldValidation
+                v-model="company.name"
+                type="text"
+                rules="required"
+                label="Company name"
+              />
+            </v-list-item-title>
+
+            <v-list-item-title class="headline">
+              <VTextFieldValidation
+                v-model="company.email"
+                type="email"
+                rules="required|email"
+                label="Email"
+              />
+            </v-list-item-title>
+            <v-list-item-title class="headline">
+              <VTextFieldValidation
+                v-model="company.website"
+                type="url"
+                rules="required|url"
+                label="Web site"
+              />
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-card-actions />
+      </v-card>
+    </v-dialog>
+
     <v-col
       v-for="company in getCompanies.items"
       :key="company.id"
@@ -62,6 +111,8 @@ import { Action, Getter, Mutation } from 'vuex-class';
   },
   components: {
     PageLink: () => import('~/components/PageLink'),
+    VTextFieldValidation: () =>
+      import('~/components/inputs/VTextFieldValidation'),
   },
   async fetch({ store }) {
     return await store.dispatch('CompaniesModule/selectCompanies');
@@ -69,6 +120,7 @@ import { Action, Getter, Mutation } from 'vuex-class';
 })
 export default class CompaniesPage extends Vue {
   @Action('CompaniesModule/selectCompanies') selectCompanies;
+  @Action('CompaniesModule/createCompany') createCompany;
   @Action('CompaniesModule/deleteCompany') deleteCompany;
 
   @Mutation('CompaniesModule/setCurrentPage') setCurrentPage;
@@ -81,7 +133,30 @@ export default class CompaniesPage extends Vue {
     this.selectCompanies();
   }
 
+  private dialog: boolean = false;
   private currentPage: number = 1;
+  private company = {
+    name: '',
+    email: '',
+    website: '',
+  };
+
+  private async saveCompany() {
+    this.dialog = !this.dialog;
+    return await this.createCompany(this.company);
+  }
+
+  private getButtonCreate() {
+    return {
+      icon: 'mdi-plus',
+    };
+  }
+
+  private getButtonSave() {
+    return {
+      icon: 'mdi-content-save-outline',
+    };
+  }
 
   private getButtonOpen(website: string) {
     return {
