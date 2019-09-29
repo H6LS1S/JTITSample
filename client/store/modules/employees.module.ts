@@ -70,7 +70,7 @@ export class EmployeesActions extends Actions<
     this.store = store;
   }
 
-  async createEmployeey(data: Employee): Promise<void> {
+  async createEmployee(data: Employee): Promise<void> {
     await this.store.$axios.$post(`employee/`, data);
     return await this.selectEmployees();
   }

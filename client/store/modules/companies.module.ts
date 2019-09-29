@@ -67,9 +67,9 @@ export class CompaniesActions extends Actions<
     return await this.selectCompanies();
   }
 
-  async selectCompanies(): Promise<void> {
-    const params = { page: this.state.currentPage, limit: 10 };
-    const data = await this.store.$axios.$get(`company/`, { params: params });
+  async selectCompanies(limit = 10): Promise<void> {
+    const params = { page: this.state.currentPage, limit: limit };
+    const data = await this.store.$axios.$get(`company/`, { params });
     return this.mutations.setCompanies(data);
   }
 
