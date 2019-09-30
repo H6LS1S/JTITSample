@@ -1,62 +1,40 @@
 <template>
-  <v-row v-if="getCompanies" justify="center">
+  <v-row justify="center">
     <v-pagination
       v-if="getCompanies.pages > 1"
-      v-model="currentPage"
+      :value="getCurrentPage"
+      @input="setCurrentPage"
       :length="getCompanies.pages"
       :total-visible="5"
     />
 
-    <v-dialog max-width="500px">
-      <template v-slot:activator="{ on }">
-        <PageLink
-          v-on="on"
-          :page="getButtonCreate()"
-          fixed
-          bottom
-          right
-          fab
-          color="primary"
+    <CreateDialogForm @save="createCompany(company)">
+      <v-list-item-title class="headline">
+        <VTextFieldValidation
+          v-model="company.name"
+          type="text"
+          rules="required"
+          label="Company name"
         />
-      </template>
-      <v-card>
-        <v-card-title>
-          <v-spacer />
-          <PageLink :page="getButtonSave()" @click="saveCompany()" icon />
-        </v-card-title>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title class="headline">
-              <VTextFieldValidation
-                v-model="company.name"
-                type="text"
-                rules="required"
-                label="Company name"
-              />
-            </v-list-item-title>
+      </v-list-item-title>
 
-            <v-list-item-title class="headline">
-              <VTextFieldValidation
-                v-model="company.email"
-                type="email"
-                rules="required|email"
-                label="Email"
-              />
-            </v-list-item-title>
-            <v-list-item-title class="headline">
-              <VTextFieldValidation
-                v-model="company.website"
-                type="url"
-                rules="required|url"
-                label="Web site"
-              />
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-card-actions />
-      </v-card>
-    </v-dialog>
+      <v-list-item-title class="headline">
+        <VTextFieldValidation
+          v-model="company.email"
+          type="email"
+          rules="required|email"
+          label="Email"
+        />
+      </v-list-item-title>
+      <v-list-item-title class="headline">
+        <VTextFieldValidation
+          v-model="company.website"
+          type="url"
+          rules="required|url"
+          label="Web site"
+        />
+      </v-list-item-title>
+    </CreateDialogForm>
 
     <v-col
       v-for="company in getCompanies.items"
@@ -112,6 +90,7 @@ import { Action, Getter, Mutation } from 'vuex-class';
   },
   components: {
     PageLink: () => import('~/components/PageLink'),
+    CreateDialogForm: () => import('~/components/CreateDialogForm'),
     VTextFieldValidation: () =>
       import('~/components/inputs/VTextFieldValidation'),
   },
@@ -126,38 +105,19 @@ export default class CompaniesPage extends Vue {
 
   @Mutation('CompaniesModule/setCurrentPage') setCurrentPage;
 
+  @Getter('CompaniesModule/getCurrentPage') getCurrentPage;
   @Getter('CompaniesModule/getCompanies') getCompanies;
 
-  @Watch('currentPage')
-  onChangeCurrentPage(id: number) {
-    this.setCurrentPage(id);
-    this.selectCompanies();
+  @Watch('getCurrentPage')
+  async onChangeCurrentPage() {
+    return await this.selectCompanies();
   }
 
-  private dialog: boolean = false;
-  private currentPage: number = 1;
   private company = {
     name: '',
     email: '',
     website: '',
   };
-
-  private async saveCompany() {
-    this.dialog = !this.dialog;
-    return await this.createCompany(this.company);
-  }
-
-  private getButtonCreate() {
-    return {
-      icon: 'mdi-plus',
-    };
-  }
-
-  private getButtonSave() {
-    return {
-      icon: 'mdi-content-save-outline',
-    };
-  }
 
   private getButtonOpen(website: string) {
     return {

@@ -1,84 +1,64 @@
 <template>
-  <v-row v-if="getEmployees" justify="center">
+  <v-row justify="center">
     <v-pagination
       v-if="getEmployees.pages > 1"
-      v-model="currentPage"
+      :value="getCurrentPage"
+      @input="setCurrentPage"
       :length="getEmployees.pages"
       :total-visible="5"
     />
 
-    <v-dialog max-width="500px">
-      <template v-slot:activator="{ on }">
-        <PageLink
-          v-on="on"
-          :page="getButtonCreate()"
-          @click="selectCompanies(0)"
-          fixed
-          bottom
-          right
-          fab
-          color="primary"
+    <CreateDialogForm
+      @open="selectCompanies(0)"
+      @save="createEmployee(employee)"
+    >
+      <v-list-item-title class="headline">
+        <v-select
+          v-model="employee.company"
+          :items="getCompanies.items"
+          item-text="name"
+          item-value="id"
+          label="Company"
         />
-      </template>
-      <v-card v-if="getCompanies">
-        <v-card-title>
-          <v-spacer />
-          <PageLink :page="getButtonSave()" @click="saveEmployee()" icon />
-        </v-card-title>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title class="headline">
-              <v-select
-                v-model="employee.company"
-                :items="getCompanies.items"
-                item-text="name"
-                item-value="id"
-                label="Company"
-              />
-              <v-row>
-                <v-col sm="12" md="6">
-                  <VTextFieldValidation
-                    v-model="employee.firstName"
-                    type="text"
-                    rules="required"
-                    label="Firs name"
-                  />
-                </v-col>
-                <v-col sm="12" md="6">
-                  <VTextFieldValidation
-                    v-model="employee.lastName"
-                    type="text"
-                    rules="required"
-                    label="Last name"
-                  />
-                </v-col>
-              </v-row>
-            </v-list-item-title>
-            <v-list-item-title class="headline">
-              <VTextFieldValidation
-                v-model="employee.email"
-                type="email"
-                rules="required|email"
-                label="Email"
-              />
-            </v-list-item-title>
-            <v-list-item-title class="headline">
-              <VTextFieldValidation
-                v-model="employee.phone"
-                type="tel"
-                rules="required|phone"
-                label="Phone"
-              >
-              </VTextFieldValidation>
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <v-row>
+          <v-col sm="12" md="6">
+            <VTextFieldValidation
+              v-model="employee.firstName"
+              type="text"
+              rules="required"
+              label="Firs name"
+            />
+          </v-col>
+          <v-col sm="12" md="6">
+            <VTextFieldValidation
+              v-model="employee.lastName"
+              type="text"
+              rules="required"
+              label="Last name"
+            />
+          </v-col>
+        </v-row>
+      </v-list-item-title>
+      <v-list-item-title class="headline">
+        <VTextFieldValidation
+          v-model="employee.email"
+          type="email"
+          rules="required|email"
+          label="Email"
+        />
+      </v-list-item-title>
+      <v-list-item-title class="headline">
+        <VTextFieldValidation
+          v-model="employee.phone"
+          type="tel"
+          rules="required|phone"
+          label="Phone"
+        >
+        </VTextFieldValidation>
+      </v-list-item-title>
+    </CreateDialogForm>
 
-        <v-card-actions />
-      </v-card>
-    </v-dialog>
-
-    <v-col sm="12" md="12" lg="6">
+    <v-col sm="12" md="8">
       <v-list-item v-for="employee in getEmployees.items" :key="employee.id">
         <v-list-item-avatar>
           <v-icon>mdi-account-outline</v-icon>
@@ -119,6 +99,7 @@ import { Action, Getter, Mutation } from 'vuex-class';
   },
   components: {
     PageLink: () => import('~/components/PageLink'),
+    CreateDialogForm: () => import('~/components/CreateDialogForm'),
     VTextFieldValidation: () =>
       import('~/components/inputs/VTextFieldValidation'),
   },
@@ -134,19 +115,15 @@ export default class EmployeesPage extends Vue {
 
   @Mutation('EmployeesModule/setCurrentPage') setCurrentPage;
 
+  @Getter('EmployeesModule/getCurrentPage') getCurrentPage;
   @Getter('CompaniesModule/getCompanies') getCompanies;
   @Getter('EmployeesModule/getEmployees') getEmployees;
-  @Getter('EmployeesModule/getHeaders') headers;
 
-  @Watch('currentPage')
-  onChangeCurrentPage(id: number) {
-    this.setCurrentPage(id);
-    this.selectEmployees();
+  @Watch('getCurrentPage')
+  async onChangeCurrentPage() {
+    return await this.selectEmployees();
   }
 
-  private dialog: boolean = false;
-  private currentPage: number = 1;
-  private mask: string = '###-###-##-##';
   private employee = {
     company: '',
     firstName: '',
@@ -154,23 +131,6 @@ export default class EmployeesPage extends Vue {
     email: '',
     phone: '',
   };
-
-  private async saveEmployee() {
-    this.dialog = !this.dialog;
-    return await this.createEmployee(this.employee);
-  }
-
-  private getButtonCreate() {
-    return {
-      icon: 'mdi-plus',
-    };
-  }
-
-  private getButtonSave() {
-    return {
-      icon: 'mdi-content-save-outline',
-    };
-  }
 
   private getButtonCompanies(id: number) {
     return {
