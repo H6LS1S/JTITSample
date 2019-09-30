@@ -1,64 +1,66 @@
 import { Getters, Mutations, Actions, Module } from 'vuex-smart-module';
 import { NuxtAxiosInstance } from '@nuxtjs/axios';
 import { Store } from 'vuex';
+import Vue from 'vue';
 
 import { Company } from './companies.module';
 
 export interface Employee {
   readonly id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  company: Company;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly email: string;
+  readonly phone: string;
+  readonly company: Company;
   readonly createAt: Date;
   readonly updateAt: Date;
 }
 
-export interface Header {
-  text: string;
-  value: string;
-  sortable?: boolean;
+export interface Employees {
+  items: Employee[];
+  pages: number;
 }
 
 class EmployeesState {
+  error!: any;
   currentPage: number = 1;
-  employees!: Employee[];
+  employees!: Employees;
   employee!: Employee;
-  headers: Header[] = [
-    { text: 'First name', value: 'firstName' },
-    { text: 'Last name', value: 'lastName' },
-    { text: 'Email', value: 'email' },
-    { text: 'Phone', value: 'phone' },
-    { text: '', value: 'action', sortable: false },
-  ];
 }
 
 class EmployeesGetters extends Getters<EmployeesState> {
-  get getEmployees(): Employee[] {
+  get getError(): any {
+    return this.state.error;
+  }
+
+  get getCurrentPage(): number {
+    return this.state.currentPage;
+  }
+
+  get getEmployees(): Employees {
     return this.state.employees;
   }
 
   get getEmployee(): Employee {
     return this.state.employee;
   }
-
-  get getHeaders(): Header[] {
-    return this.state.headers;
-  }
 }
 
 class EmployeesMutations extends Mutations<EmployeesState> {
-  setCurrentPage(id: number): void {
-    this.state.currentPage = id;
+  setError(data: any): any {
+    return Vue.set(this.state, 'error', data);
   }
 
-  setEmployees(data: Employee[]): void {
-    this.state.employees = data;
+  setCurrentPage(id: number): number {
+    return Vue.set(this.state, 'currentPage', id);
   }
 
-  setEmployee(data: Employee): void {
-    this.state.employee = data;
+  setEmployees(data: Employees): Employees {
+    return Vue.set(this.state, 'employees', data);
+  }
+
+  setEmployee(data: Employee): Employee {
+    return Vue.set(this.state, 'employee', data);
   }
 }
 
@@ -74,29 +76,40 @@ export class EmployeesActions extends Actions<
   }
 
   async createEmployee(data: Employee): Promise<void> {
-    await this.store.$axios.$post(`employee/`, data);
-    return await this.selectEmployees();
+    return await this.store.$axios
+      .$post(`employee/`, data)
+      .catch(err => this.mutations.setError(err))
+      .then(() => this.selectEmployees());
   }
 
-  async selectEmployees(): Promise<void> {
-    const params = { page: this.state.currentPage, limit: 10 };
-    const data = await this.store.$axios.$get(`employee/`, { params: params });
-    return this.mutations.setEmployees(data);
+  async selectEmployees(limit = 10): Promise<void> {
+    const params = { page: this.state.currentPage, limit };
+    return await this.store.$axios
+      .$get(`employee/`, { params })
+      .then(data => this.mutations.setEmployees(data))
+      .catch(err => this.mutations.setError(err));
   }
 
   async selectEmployee(id: number): Promise<void> {
-    const data = await this.store.$axios.$get(`employee/${id}`);
-    return this.mutations.setEmployee(data);
+    return await this.store.$axios
+      .$get(`employee/${id}`)
+      .then(data => this.mutations.setEmployee(data))
+      .catch(err => this.mutations.setError(err));
   }
 
   async updateEmployee(data: Employee): Promise<void> {
-    await this.store.$axios.$patch(`employee/${data.id}`, data);
-    return await this.selectEmployees();
+    const { id } = this.state.employee;
+    return await this.store.$axios
+      .$patch(`employee/${id}`, data)
+      .then(res => this.mutations.setEmployee(res))
+      .catch(err => this.mutations.setError(err));
   }
 
   async deleteEmployee(id: number): Promise<void> {
-    await this.store.$axios.$delete(`employee/${id}`);
-    return await this.selectEmployees();
+    return await this.store.$axios
+      .$delete(`employee/${id}`)
+      .catch(err => this.mutations.setError(err))
+      .then(() => this.selectEmployees());
   }
 }
 

@@ -1,6 +1,7 @@
 import { Getters, Mutations, Actions, Module } from 'vuex-smart-module';
 import { NuxtAxiosInstance } from '@nuxtjs/axios';
 import { Store } from 'vuex';
+import Vue from 'vue';
 
 import { createStore } from 'vuex-smart-module';
 
@@ -21,6 +22,8 @@ export interface Pages {
 }
 
 class RootState {
+  auth!: any;
+  error!: any;
   pages: Pages[] = [
     { icon: 'mdi-view-dashboard-outline', attr: { to: '/', exact: true } },
     { icon: 'mdi-domain', attr: { to: '/companies', exact: true } },
@@ -36,10 +39,13 @@ class RootState {
       },
     },
   ];
-  auth: any;
 }
 
 class RootGetters extends Getters<RootState> {
+  get getError(): any {
+    return this.state.error;
+  }
+
   get getPages(): Pages[] {
     return this.state.pages;
   }
@@ -49,7 +55,11 @@ class RootGetters extends Getters<RootState> {
   }
 }
 
-class RootMutations extends Mutations<RootState> {}
+class RootMutations extends Mutations<RootState> {
+  setError(data: any) {
+    return Vue.set(this.state, 'error', data);
+  }
+}
 
 class RootActions extends Actions<
   RootState,
@@ -57,19 +67,23 @@ class RootActions extends Actions<
   RootMutations,
   RootActions
 > {
-  store!: Store<NuxtAxiosInstance>;
+  store!: Store<NuxtAxiosInstance> | any;
 
   $init(store: Store<NuxtAxiosInstance>): void {
     this.store = store;
   }
 
   async registrationUser(data: any): Promise<void> {
-    await this.store.$axios.$post('user', data);
+    await this.store.$axios
+      .$post('user', data)
+      .catch(err => this.mutations.setError(err));
     return await this.authorizationUser(data);
   }
 
   async authorizationUser(data: any): Promise<void> {
-    return await this.store.$auth.loginWith('local', { data: data });
+    return await this.store.$auth
+      .loginWith('local', { data })
+      .catch(err => this.mutations.setError(err));
   }
 }
 
