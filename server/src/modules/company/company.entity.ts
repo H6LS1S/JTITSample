@@ -33,6 +33,7 @@ export class CompanyEntity extends BaseEntity {
   @Column('varchar', {
     nullable: true,
     name: 'logotype',
+    default: '',
   })
   logotype: string;
 
