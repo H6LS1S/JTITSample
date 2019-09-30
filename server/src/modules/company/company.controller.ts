@@ -21,12 +21,15 @@ import { CompanyService } from './company.service';
 import { UploadService } from './upload.service';
 import { CompanyEntity } from './company.entity';
 
+import { EmailService } from '../../email/email.service';
+
 @ApiUseTags('company')
 @Controller('company')
 export class CompanyController {
   constructor(
     private readonly companyService: CompanyService,
     private readonly uploadService: UploadService,
+    private readonly emailService: EmailService,
   ) {}
 
   @Post()
@@ -36,6 +39,13 @@ export class CompanyController {
     @User() owner: UserEntity,
     @Body() payload: CompanyRequestDTO,
   ): Promise<CompanyEntity> {
+    await this.emailService.sendEmail({
+      to: payload.email,
+      subject: 'Add company',
+      template: 'notification',
+      context: payload,
+    });
+
     return await this.companyService.createOne(payload, owner).catch(() => {
       throw new HttpException(`Company already exists`, HttpStatus.CONFLICT);
     });
