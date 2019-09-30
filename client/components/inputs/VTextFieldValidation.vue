@@ -21,7 +21,7 @@ import { ValidationProvider } from 'vee-validate';
   },
 })
 export default class VTextFieldValidation extends Vue {
-  @Prop({ type: String, required: true }) value: string;
+  @Prop({ type: String, required: false }) value: string;
   @Prop({ type: String, required: true }) rules: string;
   @Prop({ type: String, required: false }) vid: string;
 
