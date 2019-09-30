@@ -41,7 +41,7 @@ export class CompanyController {
   ): Promise<CompanyEntity> {
     await this.emailService.sendEmail({
       to: payload.email,
-      subject: 'Add company',
+      subject: 'Notification of the addition of your company',
       template: 'notification',
       context: payload,
     });
