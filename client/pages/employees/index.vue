@@ -1,23 +1,29 @@
 <template>
   <v-row v-if="getEmployees" justify="center">
+    <v-pagination
+      v-if="getEmployees.pages > 1"
+      v-model="currentPage"
+      :length="getEmployees.pages"
+      :total-visible="5"
+    />
+
     <v-dialog max-width="500px">
       <template v-slot:activator="{ on }">
         <PageLink
           v-on="on"
           :page="getButtonCreate()"
           @click="selectCompanies(0)"
-          fixed bottom right fab
+          fixed
+          bottom
+          right
+          fab
           color="primary"
         />
       </template>
       <v-card v-if="getCompanies">
         <v-card-title>
           <v-spacer />
-          <PageLink
-            :page="getButtonSave()"
-            @click="saveEmployee()"
-            icon
-          />
+          <PageLink :page="getButtonSave()" @click="saveEmployee()" icon />
         </v-card-title>
         <v-list-item>
           <v-list-item-content>
@@ -71,29 +77,38 @@
         <v-card-actions />
       </v-card>
     </v-dialog>
-    <v-data-table :headers="headers" :items="getEmployees.items">
-      <template v-slot:top>
-        <v-toolbar flat color="white">
-          <v-toolbar-title>Employees</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical />
-          <v-spacer />
-        </v-toolbar>
-      </template>
-      <template v-slot:item.action="{ item }">
-        <PageLink :page="getButtonUpdate(item.id)" icon />
-        <PageLink
-          :page="getButtonDelete()"
-          @click="deleteEmployee(item.id)"
-          icon
-        />
-      </template>
-    </v-data-table>
+
+    <v-col sm="12" md="12" lg="6">
+      <v-list-item v-for="employee in getEmployees.items" :key="employee.id">
+        <v-list-item-avatar>
+          <v-icon>mdi-account-outline</v-icon>
+        </v-list-item-avatar>
+
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ employee.firstName }} {{ employee.lastName }}
+          </v-list-item-title>
+        </v-list-item-content>
+
+        <v-list-item-icon>
+          <PageLink :page="getButtonCompanies(employee.company.id)" icon />
+          <PageLink :page="getButtonPhone(employee.phone)" icon />
+          <PageLink :page="getButtonEmail(employee.email)" icon />
+          <PageLink :page="getButtonUpdate(employee.id)" icon />
+          <PageLink
+            :page="getButtonDelete()"
+            @click="deleteEmployee(employee.id)"
+            icon
+          />
+        </v-list-item-icon>
+      </v-list-item>
+    </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import { Store, Action, Getter } from 'vuex-class';
+import { Action, Getter, Mutation } from 'vuex-class';
 
 @Component({
   layout: 'dashboard',
@@ -117,11 +132,20 @@ export default class EmployeesPage extends Vue {
   @Action('EmployeesModule/createEmployee') createEmployee;
   @Action('EmployeesModule/deleteEmployee') deleteEmployee;
 
+  @Mutation('EmployeesModule/setCurrentPage') setCurrentPage;
+
   @Getter('CompaniesModule/getCompanies') getCompanies;
   @Getter('EmployeesModule/getEmployees') getEmployees;
   @Getter('EmployeesModule/getHeaders') headers;
 
+  @Watch('currentPage')
+  onChangeCurrentPage(id: number) {
+    this.setCurrentPage(id);
+    this.selectEmployees();
+  }
+
   private dialog: boolean = false;
+  private currentPage: number = 1;
   private mask: string = '###-###-##-##';
   private employee = {
     company: '',
@@ -145,6 +169,31 @@ export default class EmployeesPage extends Vue {
   private getButtonSave() {
     return {
       icon: 'mdi-content-save-outline',
+    };
+  }
+
+  private getButtonCompanies(id: number) {
+    return {
+      icon: 'mdi-domain',
+      attr: { to: `/companies/${id}`, exact: true },
+    };
+  }
+
+  private getButtonPhone(phone: string) {
+    return {
+      icon: 'mdi-phone-forward',
+      attr: {
+        href: `tel:${phone}`,
+      },
+    };
+  }
+
+  private getButtonEmail(email: string) {
+    return {
+      icon: 'mdi-email-send-outline',
+      attr: {
+        href: `mailto:${email}`,
+      },
     };
   }
 

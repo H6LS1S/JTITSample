@@ -2,12 +2,15 @@ import { Getters, Mutations, Actions, Module } from 'vuex-smart-module';
 import { NuxtAxiosInstance } from '@nuxtjs/axios';
 import { Store } from 'vuex';
 
+import { Company } from './companies.module';
+
 export interface Employee {
   readonly id: number;
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
+  company: Company;
   readonly createAt: Date;
   readonly updateAt: Date;
 }

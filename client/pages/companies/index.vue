@@ -7,13 +7,15 @@
       :total-visible="5"
     />
 
-    <v-spacer />
     <v-dialog max-width="500px">
       <template v-slot:activator="{ on }">
         <PageLink
           v-on="on"
           :page="getButtonCreate()"
-          fixed bottom right fab
+          fixed
+          bottom
+          right
+          fab
           color="primary"
         />
       </template>
@@ -85,13 +87,12 @@
         </v-img>
         <v-card-actions>
           <PageLink :page="getButtonUpdate(company.id)" icon />
+          <v-spacer />
           <PageLink
             :page="getButtonDelete()"
             @click="deleteCompany(company.id)"
             icon
           />
-          <v-spacer />
-          <PageLink :page="getButtonEmployees(company.employees)" icon />
         </v-card-actions>
       </v-card>
     </v-col>
@@ -187,13 +188,6 @@ export default class CompaniesPage extends Vue {
   private getButtonDelete() {
     return {
       icon: 'mdi-delete',
-    };
-  }
-
-  private getButtonEmployees(employees) {
-    return {
-      title: employees.length,
-      icon: 'mdi-account-group-outline',
     };
   }
 
