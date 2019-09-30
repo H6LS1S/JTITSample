@@ -1,6 +1,6 @@
 <template>
   <v-row v-if="company" justify="center">
-    <LogotypePicker :logotype="company.logotype" :readonly="isAuth" />
+    <LogotypePicker :logotype="company.logotype" :readonly="!isAuth" />
     <v-col sm="12">
       <EditCardForm
         @save="saveCompany()"

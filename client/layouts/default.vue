@@ -1,14 +1,14 @@
 <template>
   <v-app>
-    <v-row align="center" justify="center">
-      <v-col cols="12" xs="12" sm="8" md="4" lg="3">
-        <v-content>
-          <v-container class="fill-height" fluid>
+    <v-content>
+      <v-container class="fill-height" fluid>
+        <v-row align="center" justify="center">
+          <v-col cols="12" xs="12" sm="8" md="4" lg="3">
             <nuxt />
-          </v-container>
-        </v-content>
-      </v-col>
-    </v-row>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-content>
   </v-app>
 </template>
 
