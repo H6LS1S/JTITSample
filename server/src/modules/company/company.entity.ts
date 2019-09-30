@@ -48,11 +48,9 @@ export class CompanyEntity extends BaseEntity {
   @JoinColumn({ name: 'owner' })
   owner: UserEntity;
 
-  @JoinColumn()
   @OneToMany(_type => EmployeeEntity, employee => employee.company, {
     nullable: true,
     cascade: true,
-    eager: true,
   })
   employees: EmployeeEntity[];
 

@@ -4,6 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 import { CompanyEntity } from '../company/company.entity';
@@ -39,12 +40,10 @@ export class EmployeeEntity extends BaseEntity {
   })
   phone: string;
 
-  @Column('varchar', {
-    nullable: false,
-    name: 'companyId',
-  })
+  @JoinColumn()
   @ManyToOne(_type => CompanyEntity, company => company.employees, {
     nullable: false,
+    eager: true,
   })
   company: CompanyEntity;
 
