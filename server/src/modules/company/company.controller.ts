@@ -39,16 +39,20 @@ export class CompanyController {
     @User() owner: UserEntity,
     @Body() payload: CompanyRequestDTO,
   ): Promise<CompanyEntity> {
-    await this.emailService.sendEmail({
+    const company = await this.companyService
+      .createOne(payload, owner)
+      .catch(() => {
+        throw new HttpException(`Company already exists`, HttpStatus.CONFLICT);
+      });
+
+    this.emailService.sendEmail({
       to: payload.email,
       subject: 'Notification of the addition of your company',
       template: 'notification',
-      context: payload,
+      context: company,
     });
 
-    return await this.companyService.createOne(payload, owner).catch(() => {
-      throw new HttpException(`Company already exists`, HttpStatus.CONFLICT);
-    });
+    return company;
   }
 
   @Get()
