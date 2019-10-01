@@ -1,6 +1,6 @@
 <template>
-  <v-row v-if="company" justify="center">
-    <LogotypePicker :logotype="company.logotype" :readonly="!isAuth" />
+  <v-row justify="center">
+    <LogotypePicker :logotype="getCompany.logotype" :readonly="!isAuth" />
     <v-col sm="12">
       <EditCardForm
         @save="saveCompany()"
@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Action, Getter } from 'vuex-class';
 
 @Component({
@@ -68,15 +68,15 @@ export default class CompaniesPage extends Vue {
   @Getter('CompaniesModule/getCompany') getCompany;
   @Getter('isAuth') isAuth;
 
-  private company: any;
-
   created() {
     this.company = Object.assign({}, this.getCompany);
   }
 
+  private company: any;
+
   private async saveCompany() {
-    await this.updateCompany(this.company);
     this.company = Object.assign({}, this.getCompany);
+    await this.updateCompany(this.company);
     return (this.readonly = !this.readonly);
   }
 
