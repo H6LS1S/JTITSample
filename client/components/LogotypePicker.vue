@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
 @Component
@@ -29,9 +29,8 @@ export default class LogotypePicker extends Vue {
   private async onFileInputChange(fieldName, file) {
     const formData = new FormData();
     const imageFile = this.$refs.file.files[0];
-    const imageURL = URL.createObjectURL(imageFile);
     formData.append('logotype', imageFile);
-    await this.updateLogotype(formData);
+    return await this.updateLogotype(formData);
   }
 }
 </script>
