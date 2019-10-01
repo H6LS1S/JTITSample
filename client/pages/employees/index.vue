@@ -8,10 +8,7 @@
       :total-visible="5"
     />
 
-    <CreateDialogForm
-      @open="selectCompanies(0)"
-      @save="createEmployee(employee)"
-    >
+    <CreateDialogForm @save="createEmployee(employee)">
       <v-list-item-title class="headline">
         <v-select
           v-model="employee.company"
@@ -104,11 +101,11 @@ import { Action, Getter, Mutation } from 'vuex-class';
       import('~/components/inputs/VTextFieldValidation'),
   },
   async fetch({ store }) {
-    return await store.dispatch('EmployeesModule/selectEmployees');
+    await store.dispatch('EmployeesModule/selectEmployees');
+    return await store.dispatch('CompaniesModule/selectCompanies');
   },
 })
 export default class EmployeesPage extends Vue {
-  @Action('CompaniesModule/selectCompanies') selectCompanies;
   @Action('EmployeesModule/selectEmployees') selectEmployees;
   @Action('EmployeesModule/createEmployee') createEmployee;
   @Action('EmployeesModule/deleteEmployee') deleteEmployee;
