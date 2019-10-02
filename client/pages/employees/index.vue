@@ -55,7 +55,7 @@
       </v-list-item-title>
     </CreateDialogForm>
 
-    <v-col sm="12" md="8">
+    <!-- <v-col xs="12" md="8"> -->
       <v-list-item v-for="employee in getEmployees.items" :key="employee.id">
         <v-list-item-avatar>
           <v-icon>mdi-account-outline</v-icon>
@@ -79,7 +79,7 @@
           />
         </v-list-item-icon>
       </v-list-item>
-    </v-col>
+    <!-- </v-col> -->
   </v-row>
 </template>
 

@@ -21,13 +21,13 @@ describe('', () => {
   let authService: AuthService;
 
   let generateUser = new GenerateUser();
-  let generateBadUser = new GenerateBadUser();
+  const generateBadUser = new GenerateBadUser();
 
-  let generateCompany = new GenerateCompany();
-  let generateBadCompany = new GenerateBadCompany();
+  const generateCompany = new GenerateCompany();
+  const generateBadCompany = new GenerateBadCompany();
 
-  let generateEmployee = new GenerateEmployee(2);
-  let generateBadEmployee = new GenerateBadEmployee(1);
+  const generateEmployee = new GenerateEmployee(2);
+  const generateBadEmployee = new GenerateBadEmployee(1);
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -70,7 +70,7 @@ describe('', () => {
     });
 
     describe('[Patch]: Update', () => {
-      generateUser = new GenerateUser()
+      generateUser = new GenerateUser();
 
       it('[401]: Unauthorized', async () => {
         return await request.patch(route, 401, generateUser);

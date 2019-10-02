@@ -40,7 +40,6 @@
       v-for="company in getCompanies.items"
       :key="company.id"
       xs="12"
-      sm="12"
       md="6"
       lg="4"
     >

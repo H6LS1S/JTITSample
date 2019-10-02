@@ -3,7 +3,7 @@
     <v-content>
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
-          <v-col cols="12" xs="12" sm="8" md="4" lg="3">
+          <v-col xs="12" md="6" lg="4">
             <nuxt />
           </v-col>
         </v-row>
